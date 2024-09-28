@@ -1,0 +1,11 @@
+{
+  "name": "opus_classical_gleam",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest",
+    "tailwindcss": "^3.4.13"
+  },
+  "peerDependencies": {
+    "typescript": "latest"
+  }
+}
