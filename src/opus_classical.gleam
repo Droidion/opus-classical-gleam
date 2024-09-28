@@ -9,20 +9,25 @@ import wisp/wisp_mist
 
 pub fn main() {
   wisp.configure_logger()
-  let secret_key_base = wisp.random_string(64)
   let env_vars = env.load_env()
-  let context = web.Context(conn: db.db_connect(env_vars), env_vars: env_vars)
+  let context =
+    web.Context(
+      conn: db.db_connect(env_vars.postgres),
+      env_vars: env_vars,
+      static_directory: static_directory(),
+    )
   let handler = router.handle_request(_, context)
 
   let assert Ok(_) =
-    wisp_mist.handler(handler, secret_key_base)
+    wisp_mist.handler(handler, env_vars.secret_key)
     |> mist.new
-    |> mist.port(8000)
+    |> mist.port(env_vars.server_port)
     |> mist.start_http
 
   process.sleep_forever()
 }
 
-pub type FindSquirrelRow {
-  FindSquirrelRow(name: String, owned_acorns: Int)
+pub fn static_directory() -> String {
+  let assert Ok(priv_directory) = wisp.priv_directory("opus_classical")
+  priv_directory <> "/static"
 }

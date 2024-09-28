@@ -4,15 +4,15 @@ import gleam/pgo.{type QueryError, type Returned}
 import opus_classical/env
 import opus_classical/models.{type Country, Country}
 
-pub fn db_connect(env_vars: env.EnvVars) -> pgo.Connection {
+pub fn db_connect(postgres_config: env.PostgresConfig) -> pgo.Connection {
   pgo.connect(
     pgo.Config(
       ..pgo.default_config(),
-      user: env_vars.postgres_user,
-      password: Some(env_vars.postgres_password),
-      host: env_vars.postgres_host,
-      database: env_vars.postgres_database,
-      port: env_vars.postgres_port,
+      user: postgres_config.user,
+      password: Some(postgres_config.password),
+      host: postgres_config.host,
+      database: postgres_config.database,
+      port: postgres_config.port,
     ),
   )
 }
