@@ -1,8 +1,9 @@
 import gleam/http.{Get}
 import gleam/list
-import nakai
-import nakai/html
+import lustre/element
 import opus_classical/db
+import opus_classical/pages
+import opus_classical/pages/layout.{layout}
 import opus_classical/web.{type Context}
 import wisp.{type Request, type Response}
 
@@ -30,13 +31,10 @@ fn home_page(req: Request, ctx: Context) -> Response {
 
   case db.get_countries(ctx.conn) {
     Ok(countries) -> {
-      let html =
-        countries.rows
-        |> list.map(fn(country) { html.div_text([], country.name) })
-        |> html.div([], _)
-        |> nakai.to_string_builder()
-      wisp.ok()
-      |> wisp.html_body(html)
+      [pages.home(countries.rows)]
+      |> layout
+      |> element.to_document_string_builder
+      |> wisp.html_response(200)
     }
     Error(_) -> {
       wisp.internal_server_error()
